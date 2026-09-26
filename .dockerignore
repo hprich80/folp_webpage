@@ -1,0 +1,13 @@
+.venv
+.git
+.agents
+.codex
+.env
+.env.*
+.local-secret
+db.sqlite3
+data
+media
+staticfiles
+__pycache__
+*.pyc

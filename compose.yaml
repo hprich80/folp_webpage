@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: folp.container_settings
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY in .env}
+      DEMO_ADMIN_USERNAME: ${DEMO_ADMIN_USERNAME:-folpadmin}
+      DEMO_ADMIN_PASSWORD: ${DEMO_ADMIN_PASSWORD:-larkhall}
+    restart: unless-stopped
+    # Deliberately no volume: replacing the container resets its demo database.
+    healthcheck:
+      test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1',8000,timeout=5); c.request('GET','/health/'); r=c.getresponse(); raise SystemExit(0 if r.status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3

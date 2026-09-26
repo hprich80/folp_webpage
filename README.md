@@ -15,7 +15,29 @@ python manage.py runserver 127.0.0.1:8000
 
 Open http://127.0.0.1:8000/.
 
-## Edit content
+## Docker preview
+
+Create `.env` from `.env.example` and replace the placeholder key. Generate a key with:
+
+```sh
+python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+```
+
+All hostnames are accepted for this prototype. Open `/admin/` on whichever host and port you use; no base URL configuration is needed. Absolute links in notification emails are not configured (email currently goes to console only), so Wagtail's corresponding warning is intentionally silenced. Permit inbound TCP 8000 in the security group for the public preview. Then:
+
+```sh
+docker compose up --build -d
+docker compose logs -f web
+docker compose down
+```
+
+Gunicorn serves Django; WhiteNoise serves collected CSS and other static files. Container settings disable debug and require an environment secret. The container runs as a non-root user. Startup migrates SQLite and seeds demo pages. One worker with two threads limits memory use for a small instance.
+
+There are deliberately no persistent volumes. A stop/start of the same container retains data, but removing/replacing it (including `docker compose down`) loses edits. Local SQLite, credentials and `.env` are excluded from the image. Startup creates or resets the prototype administrator from `DEMO_ADMIN_USERNAME` and `DEMO_ADMIN_PASSWORD` (defaults: `folpadmin` / `larkhall`). Admin routes remain enabled, but do not send admin passwords or session cookies over a public HTTP connection; use local editing until HTTPS is configured. Uploaded media is not served by this preview configuration.
+
+On an Apple Silicon Mac, build for `linux/amd64` if exporting an image for an x86 T3 instance, or build directly on the target instance. This configuration creates no AWS resources and deploys nothing automatically.
+
+## Edit content locally
 
 ```sh
 source .venv/bin/activate
@@ -32,7 +54,7 @@ The seed command is idempotent: it does not overwrite existing pages. Sample dat
 - Donations are not connected; the Donate page provides an email enquiry link.
 - No payment data or membership details are collected.
 - The local server binds only to localhost. Settings use DEBUG and are not suitable for public hosting.
-- Create your own editor credentials; no default account or password is shipped.
+- Docker startup configures the requested demo credentials: `folpadmin` / `larkhall`. These are prototype-only credentials.
 - Production will need deployment settings, HTTPS, persistent media, backups, email delivery and secret management.
 
 ## Assets and copy
