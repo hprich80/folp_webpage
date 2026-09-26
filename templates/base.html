@@ -1,0 +1,13 @@
+{% load static wagtailcore_tags %}
+<!doctype html>
+<html lang="en-GB">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{% block title %}{{ page.title }}{% endblock %} · Friends of Larkhall Park</title><meta name="description" content="{{ page.search_description|default:'Neighbours caring for Larkhall Park. Discover local news, events and ways to get involved.' }}"><link rel="stylesheet" href="{% static 'css/site.css' %}"></head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-inner">
+<a href="/" class="brand" aria-label="Friends of Larkhall Park home"><span class="brand-mark" aria-hidden="true">F<span>LP</span></span><span>Friends of<br><strong>Larkhall Park</strong></span></a>
+<nav aria-label="Main navigation"><a href="/" {% if request.path == '/' %}aria-current="page"{% endif %}>Home</a>{% for item in navigation %}{% if item.slug != 'donate' %}<a href="{% pageurl item %}" {% if item.url in request.path %}aria-current="page"{% endif %}>{{ item.title }}</a>{% endif %}{% endfor %}<a href="https://www.instagram.com/friendsoflarkhallpark/" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a><a class="button small" href="/donate/">Donate</a></nav>
+</div></header>
+<main id="main">{% block content %}{% endblock %}</main>
+<footer><div class="wrap footer-grid"><div><a class="footer-title" href="/">Friends of Larkhall Park</a><p>A park for everyone. A community that cares.</p></div><div><span class="eyebrow">Find us</span><p>Courland Grove<br>London SW8 2PX</p></div><div><span class="eyebrow">Say hello</span><a href="mailto:info@larkhallparkfriends.org.uk">info@larkhallparkfriends.org.uk</a><a href="https://www.instagram.com/friendsoflarkhallpark/">Follow us on Instagram ↗</a></div></div><div class="wrap footer-bottom"><span>Made for our neighbourhood.</span><a href="/admin/">Editor login</a></div></footer>
+</body></html>
